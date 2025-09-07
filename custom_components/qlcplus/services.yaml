@@ -1,0 +1,10 @@
+send_command:
+  target:
+    device:
+      integration: qlcplus
+  fields:
+    command:
+      required: true
+      example: "QLC+API|getWidgetsList"
+      selector:
+        text:

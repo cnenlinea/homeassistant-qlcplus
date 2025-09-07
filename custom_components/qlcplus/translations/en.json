@@ -1,0 +1,59 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up QLC+ instance",
+        "description": "Enter the connection details for your QLC+ instance.",
+        "data": {
+          "host": "IP Address",
+          "name": "Name",
+          "port": "Port",
+          "username": "Username (optional)",
+          "password": "Password (optional)"
+        }
+      },
+      "widgets": {
+        "title": "Select Widgets",
+        "description": "Select the widgets you want to control from Home Assistant.",
+        "data": {
+          "selected_widgets": "Widgets to control"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid authentication credentials.",
+      "cannot_connect": "Failed to connect. Please check the IP address and port, and ensure the QLC+ instance is online and connected to the network.",
+      "unknown": "An unknown error occurred."
+    },
+    "abort": {
+      "already_configured": "This QLC+ instance is already configured.",
+      "cannot_connect": "Cannot connect to the QLC+ instance."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Select Widgets",
+        "description": "Select the widgets you want to control from Home Assistant. Requires reloading the integration to apply changes.",
+        "data": {
+          "selected_widgets": "Widgets to control"
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Cannot connect to the QLC+ instance."
+    }
+  },
+  "services": {
+    "send_command": {
+      "name": "Send Command",
+      "description": "Sends a command to a QLC+ instance",
+      "fields": {
+        "command": {
+          "name": "Command",
+          "description": "Command to send via WebSocket to QLC+."
+        }
+      }
+    }
+  }
+}
