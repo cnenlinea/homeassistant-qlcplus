@@ -48,7 +48,7 @@ class QLCPlusAPI:
             headers["Authorization"] = f"Basic {encoded_credentials}"
 
         try:
-            self._ws = await websockets.connect(url, additional_headers=headers)
+            self._ws = await websockets.connect(url, extra_headers=headers)
             LOGGER.debug("Connected to QLC+ at %s", url)
         except websockets.exceptions.InvalidStatus as exc:
             if exc.response.status_code == 401:
@@ -140,6 +140,22 @@ class QLCPlusAPI:
             await self.connect()
 
         command = f"{widget_id}|{value}"
+        try:
+            await self._ws.send(command)
+        except websockets.exceptions.ConnectionClosed:
+            self._ws = None
+            if not is_retry:
+                return await self.set_widget_value(widget_id, value, is_retry=True)
+            raise
+
+    async def set_gm_value(
+        self, value: int, is_retry: bool = False
+    ) -> None:
+        """Set the value of the GM slider"""
+        if not self._ws:
+            await self.connect()
+
+        command = f"GM_VALUE|{value}"
         try:
             await self._ws.send(command)
         except websockets.exceptions.ConnectionClosed:
