@@ -163,3 +163,16 @@ class QLCPlusAPI:
             if not is_retry:
                 return await self.set_widget_value(widget_id, value, is_retry=True)
             raise
+
+    async def reset_simple_desk(self, is_retry: bool = False) -> None:
+        """Resets Simple Desk value."""
+        if not self._ws:
+            await self.connect()
+        command = "QLC+API|sdResetUniverse|1"
+        try:
+            await self._ws.send(command)
+        except websockets.exceptions.ConnectionClosed:
+            self._ws = None
+            if not is_retry:
+                return await self.reset_simple_desk(is_retry=True)
+            raise

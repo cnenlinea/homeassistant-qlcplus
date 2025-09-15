@@ -6,7 +6,7 @@ DOMAIN = "qlcplus"
 LOGGER = logging.getLogger(__package__)
 
 # Platforms to be set up
-PLATFORMS = ["number", "switch"]
+PLATFORMS = ["number", "switch", "button"]
 
 # Default values
 DEFAULT_NAME = "QLC+"
