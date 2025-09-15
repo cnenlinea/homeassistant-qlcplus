@@ -176,3 +176,24 @@ class QLCPlusAPI:
             if not is_retry:
                 return await self.reset_simple_desk(is_retry=True)
             raise
+
+    async def stop_functions(self, is_retry: bool = False) -> None:
+        """Resets Simple Desk value."""
+        if not self._ws:
+            await self.connect()
+        command = "QLC+API|getFunctionsList"
+        try:
+            response = await self.send_command_and_wait_for_response(command)
+            response_parts = response.split("|")
+            function_ids = [
+                response_parts[i]
+                for i in range(2, len(response_parts), 2)
+            ]
+            for function_id in function_ids:
+                command = f"QLC+API|setFunctionStatus|{function_id}|0"
+                await self._ws.send(command)
+        except websockets.exceptions.ConnectionClosed:
+            self._ws = None
+            if not is_retry:
+                return await self.stop_functions(is_retry=True)
+            raise
