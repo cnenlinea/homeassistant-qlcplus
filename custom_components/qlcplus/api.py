@@ -48,7 +48,7 @@ class QLCPlusAPI:
             headers["Authorization"] = f"Basic {encoded_credentials}"
 
         try:
-            self._ws = await websockets.connect(url, extra_headers=headers)
+            self._ws = await websockets.connect(url, additional_headers=headers)
             LOGGER.debug("Connected to QLC+ at %s", url)
         except websockets.exceptions.InvalidStatus as exc:
             if exc.response.status_code == 401:
@@ -130,7 +130,7 @@ class QLCPlusAPI:
 
         response_parts = response.split("|")
 
-        return response_parts[2]
+        return response_parts[3]
 
     async def set_widget_value(
         self, widget_id: str, value: int, is_retry: bool = False
