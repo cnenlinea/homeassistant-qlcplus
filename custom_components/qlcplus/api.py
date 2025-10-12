@@ -161,7 +161,7 @@ class QLCPlusAPI:
         except websockets.exceptions.ConnectionClosed:
             self._ws = None
             if not is_retry:
-                return await self.set_widget_value(widget_id, value, is_retry=True)
+                return await self.set_gm_value(value, is_retry=True)
             raise
 
     async def reset_simple_desk(self, is_retry: bool = False) -> None:
@@ -196,4 +196,20 @@ class QLCPlusAPI:
             self._ws = None
             if not is_retry:
                 return await self.stop_functions(is_retry=True)
+            raise
+
+    async def set_passthrough(
+        self, value: str, is_retry: bool = False
+    ) -> None:
+        """Set the value of passthrough"""
+        if not self._ws:
+            await self.connect()
+
+        command = f"QLC+IO|PASSTHROUGH|0|{value}"
+        try:
+            await self._ws.send(command)
+        except websockets.exceptions.ConnectionClosed:
+            self._ws = None
+            if not is_retry:
+                return await self.set_passthrough(value, is_retry=True)
             raise
