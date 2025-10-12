@@ -33,6 +33,10 @@ async def async_setup_entry(
             if widget["id"] in selected_widget_ids
         ]
 
+    entities.append(
+        QLCPlusPassthroughEntity(coordinator, entry)
+    )
+
     async_add_entities(entities)
 
 
@@ -88,5 +92,39 @@ class QLCPlusSwitchEntity(CoordinatorEntity, SwitchEntity):
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
         await self.coordinator.api.set_widget_value(self.widget_id, 255)
+        self._attr_is_on = False
+        self.async_write_ha_state()
+
+
+class QLCPlusPassthroughEntity(CoordinatorEntity, SwitchEntity):
+    """Representation of QLC+ passthrough."""
+
+    def __init__(
+        self,
+        coordinator: QLCPlusDataUpdateCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize the switch entity."""
+        super().__init__(coordinator)
+        self._entry = entry
+        self._attr_unique_id = f"{entry.unique_id}_passthrough"
+        self._attr_name = f"{entry.title} Passthrough"
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information for this entity."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry.unique_id)}, name=self._entry.title
+        )
+
+    async def async_turn_on(self, **kwargs) -> None:
+        """Turn the switch on."""
+        await self.coordinator.api.set_passthrough("true")
+        self._attr_is_on = True
+        self.async_write_ha_state()
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn the switch off."""
+        await self.coordinator.api.set_passthrough("false")
         self._attr_is_on = False
         self.async_write_ha_state()
